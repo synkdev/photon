@@ -3,13 +3,27 @@ use winit::{
 	window::Window,
 };
 
+/// Simple state struct for WGPU. You can ship your own implementation and just use
+/// the Gleam struct for rendering, but this just gets rid of a lot of boilerplate
+/// code. All fields are public.
 pub struct WgpuState {
+	/// Instance
 	pub instance: wgpu::Instance,
+	/// Adapter
+	pub adapter: wgpu::Adapter,
+	/// Surface
 	pub surface: wgpu::Surface,
+	/// Device
 	pub device: wgpu::Device,
+	/// Queue
 	pub queue: wgpu::Queue,
+	/// Surface Configuration
 	pub config: wgpu::SurfaceConfiguration,
+	/// Window size
 	pub size: winit::dpi::PhysicalSize<u32>,
+	/// Clear color
+	pub clear_color: wgpu::Color,
+	/// Winit Window
 	pub window: Window,
 }
 
