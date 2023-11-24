@@ -12,7 +12,7 @@ gleam = { version = "0.1", path = "." }
 anyhow = "1.0.75"
 env_logger = "0.10.0"
 log = "0.4.20"
-wgpu = "0.17"
+wgpu = "0.18"
 winit = "0.28"
 
 
@@ -20,6 +20,6 @@ winit = "0.28"
 anyhow = "1.0.75"
 env_logger = "0.10.0"
 log = "0.4.20"
-wgpu = "0.17"
+wgpu = "0.18"
 winit = "0.28"
 pollster = "0.3"

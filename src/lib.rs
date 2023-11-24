@@ -3,7 +3,7 @@ use winit::{
 	window::Window,
 };
 
-pub struct WgpuInstance {
+pub struct WgpuState {
 	pub instance: wgpu::Instance,
 	pub surface: wgpu::Surface,
 	pub device: wgpu::Device,
@@ -13,7 +13,7 @@ pub struct WgpuInstance {
 	pub window: Window,
 }
 
-impl WgpuInstance {
+impl WgpuState {
 	pub async fn new(window: Window) -> Self {
 		let size = window.inner_size();
 
@@ -86,6 +86,30 @@ impl WgpuInstance {
 	pub fn update(&mut self) {}
 
 	pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
-		todo!()
+		let output = self.surface.get_current_texture()?;
+		let view = output.texture.create_view(&wgpu::TextureViewDescriptor::default());
+		let mut encoder = self.device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+			label: Some("render_encoder"),
+		});
+
+		{
+			let _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+				label: Some("render_pass"),
+				color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+					view: &view,
+					resolve_target: None,
+					ops: wgpu::Operations {
+						load: wgpu::LoadOp::Clear(wgpu::Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0 }),
+						store: wgpu::StoreOp::Store,
+					},
+				})],
+				depth_stencil_attachment: None,
+				..Default::default()
+			});
+		}
+		self.queue.submit(std::iter::once(encoder.finish()));
+		output.present();
+
+		Ok(())
 	}
 }
