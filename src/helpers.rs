@@ -17,7 +17,7 @@ pub struct WgpuState {
 }
 
 impl WgpuState {
-	pub async fn new(window: Window) -> Self {
+	pub async fn new(window: &Window) -> Self {
 		let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
 			backends: wgpu::Backends::VULKAN,
 			..Default::default()

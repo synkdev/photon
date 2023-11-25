@@ -8,11 +8,51 @@ use winit::{
 	window::WindowBuilder,
 };
 
+pub struct RenderInfo<'a> {
+	pub device: &'a wgpu::Device,
+	pub surface: &'a wgpu::Surface,
+	pub config: &'a wgpu::SurfaceConfiguration,
+	pub queue: &'a wgpu::Queue,
+}
+
+fn render(render_info: RenderInfo, glix: &mut glix::Glix) {
+	let surface = render_info.surface;
+	let device = render_info.device;
+	let config = render_info.config;
+	let frame = match surface.get_current_texture() {
+		Ok(frame) => frame,
+		Err(_) => {
+			surface.configure(device, config);
+			surface.get_current_texture().expect("Failed to acquire next surface texture!")
+		}
+	};
+
+	let texture_view = frame.texture.create_view(&wgpu::TextureViewDescriptor::default());
+
+	let desc = wgpu::RenderPassDescriptor {
+		label: None,
+		color_attachments: &[Some(wgpu::RenderPassColorAttachment {
+			view: &texture_view,
+			resolve_target: None,
+			ops: wgpu::Operations {
+				load: wgpu::LoadOp::Clear(wgpu::Color::RED),
+				store: wgpu::StoreOp::Store,
+			},
+		})],
+		depth_stencil_attachment: None,
+		..Default::default()
+	};
+
+	glix.render_encode(&desc);
+
+	frame.present();
+}
+
 async fn run() {
 	env_logger::init();
 	let event_loop = EventLoop::new();
 	let window = WindowBuilder::new().with_title("Hello World").build(&event_loop).unwrap();
-	let mut state = WgpuState::new(window).await;
+	let mut state = WgpuState::new(&window).await;
 	let surface = state.surface;
 	let device = std::sync::Arc::new(state.device);
 	let size = state.size;
@@ -26,7 +66,7 @@ async fn run() {
 		.copied()
 		.find(|f| f.is_srgb())
 		.unwrap_or(surface_caps.formats[0]);
-	let config = wgpu::SurfaceConfiguration {
+	let mut config = wgpu::SurfaceConfiguration {
 		usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
 		format: surface_format,
 		width: size.width,
@@ -37,9 +77,11 @@ async fn run() {
 	};
 	surface.configure(&device, &config);
 
+	let mut glix = glix::Glix::new(device.clone(), queue.clone(), config.format);
+
 	event_loop.run(move |event, _, control_flow| {
 		match event {
-			Event::WindowEvent { ref event, window_id } if window_id == state.window.id() => {
+			Event::WindowEvent { ref event, window_id } if window_id == window.id() => {
 				match event {
 					WindowEvent::CloseRequested
 					| WindowEvent::KeyboardInput {
@@ -52,25 +94,33 @@ async fn run() {
 						..
 					} => *control_flow = ControlFlow::Exit,
 					WindowEvent::Resized(phys_size) => {
-						state.resize(*phys_size);
+						config.width = size.width.max(1);
+						config.height = size.height.max(1);
+						surface.configure(&device, &config);
+						window.request_redraw();
 					}
 					WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
-						state.resize(**new_inner_size);
+						config.width = size.width.max(1);
+						config.height = size.height.max(1);
+						surface.configure(&device, &config);
+						window.request_redraw();
 					}
 					_ => {}
 				}
 			}
-			Event::RedrawRequested(window_id) if window_id == state.window().id() => {
-				state.update();
-				match state.render() {
-					Ok(_) => {}
-					Err(wgpu::SurfaceError::Lost) => state.resize(state.size),
-					Err(wgpu::SurfaceError::OutOfMemory) => *control_flow = ControlFlow::Exit,
-					Err(e) => eprintln!("{:?}", e),
-				}
+			Event::RedrawRequested(window_id) if window_id == window.id() => {
+				render(
+					RenderInfo {
+						device: &device,
+						surface: &surface,
+						config: &config,
+						queue: &queue,
+					},
+					&mut glix,
+				)
 			}
 			Event::MainEventsCleared => {
-				state.window().request_redraw();
+				window.request_redraw();
 			}
 			_ => {}
 		}
