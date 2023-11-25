@@ -35,7 +35,7 @@ fn render(render_info: RenderInfo, glix: &mut glix::Glix) {
 			view: &texture_view,
 			resolve_target: None,
 			ops: wgpu::Operations {
-				load: wgpu::LoadOp::Clear(wgpu::Color::RED),
+				load: wgpu::LoadOp::Clear(wgpu::Color::BLACK),
 				store: wgpu::StoreOp::Store,
 			},
 		})],
