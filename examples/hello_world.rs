@@ -52,7 +52,7 @@ async fn run() {
 	env_logger::init();
 	let event_loop = EventLoop::new();
 	let window = WindowBuilder::new().with_title("Hello World").build(&event_loop).unwrap();
-	let mut state = WgpuState::new(&window).await;
+	let state = WgpuState::new(&window).await;
 	let surface = state.surface;
 	let device = std::sync::Arc::new(state.device);
 	let size = state.size;
@@ -93,13 +93,13 @@ async fn run() {
 							},
 						..
 					} => *control_flow = ControlFlow::Exit,
-					WindowEvent::Resized(phys_size) => {
+					WindowEvent::Resized(_) => {
 						config.width = size.width.max(1);
 						config.height = size.height.max(1);
 						surface.configure(&device, &config);
 						window.request_redraw();
 					}
-					WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
+					WindowEvent::ScaleFactorChanged { .. } => {
 						config.width = size.width.max(1);
 						config.height = size.height.max(1);
 						surface.configure(&device, &config);
