@@ -75,6 +75,8 @@ impl Glix {
 
 		render_pass.set_pipeline(&self.render_pipeline);
 
+		render_pass.draw(0..3, 0..1);
+
 		drop(render_pass);
 		queue.submit(Some(encoder.finish()));
 	}
