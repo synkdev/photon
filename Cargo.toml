@@ -1,12 +1,12 @@
 [package]
-name = "gleam"
+name = "glixel"
 version = "0.1.0"
 edition = "2021"
 [workspace]
 members = ["examples/*"]
 
 [workspace.dependencies]
-gleam = { version = "0.1", path = "." }
+glixel = { version = "0.1", path = "." }
 
 [dependencies]
 anyhow = "1.0.75"

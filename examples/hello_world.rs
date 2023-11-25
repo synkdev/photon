@@ -1,4 +1,4 @@
-use gleam::WgpuState;
+use glixel::helpers::WgpuState;
 use winit::{
 	event::*,
 	event_loop::{

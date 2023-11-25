@@ -1,12 +1,12 @@
+pub mod helpers;
+
 use winit::{
 	event::*,
 	window::Window,
 };
 
-/// Simple state struct for WGPU. You can ship your own implementation and just use
-/// the Gleam struct for rendering, but this just gets rid of a lot of boilerplate
-/// code. All fields are public.
-pub struct WgpuState {
+/// Main struct for Glixel
+pub struct Glixel {
 	/// Instance
 	pub instance: wgpu::Instance,
 	/// Adapter
@@ -27,14 +27,9 @@ pub struct WgpuState {
 	pub window: Window,
 }
 
-impl WgpuState {
+impl Glixel {
 	pub async fn new(window: Window) -> Self {
 		let size = window.inner_size();
-
-		let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
-			backends: wgpu::Backends::VULKAN,
-			..Default::default()
-		});
 
 		let surface = unsafe { instance.create_surface(&window) }.unwrap();
 
@@ -77,7 +72,9 @@ impl WgpuState {
 		};
 		surface.configure(&device, &config);
 
-		Self { window, surface, device, queue, config, size, instance }
+		let clear_color = wgpu::Color::BLACK;
+
+		Self { window, surface, device, queue, config, size, instance, adapter, clear_color }
 	}
 
 	pub fn window(&self) -> &Window {
@@ -93,8 +90,19 @@ impl WgpuState {
 		}
 	}
 
-	pub fn input(&mut self, _event: &WindowEvent) -> bool {
-		false
+	pub fn input(&mut self, event: &WindowEvent) -> bool {
+		match event {
+			WindowEvent::CursorMoved { position, .. } => {
+				self.clear_color = wgpu::Color {
+					r: position.x as f64 / self.size.width as f64,
+					g: position.y as f64 / self.size.height as f64,
+					b: 1.0,
+					a: 1.0,
+				};
+				true
+			}
+			_ => false,
+		}
 	}
 
 	pub fn update(&mut self) {}
@@ -113,7 +121,7 @@ impl WgpuState {
 					view: &view,
 					resolve_target: None,
 					ops: wgpu::Operations {
-						load: wgpu::LoadOp::Clear(wgpu::Color { r: 0.1, g: 0.2, b: 0.3, a: 1.0 }),
+						load: wgpu::LoadOp::Clear(self.clear_color),
 						store: wgpu::StoreOp::Store,
 					},
 				})],
