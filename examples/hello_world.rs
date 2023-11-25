@@ -1,4 +1,4 @@
-use glixel::helpers::WgpuState;
+use glix::helpers::WgpuState;
 use winit::{
 	event::*,
 	event_loop::{

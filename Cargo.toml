@@ -1,12 +1,12 @@
 [package]
-name = "glixel"
+name = "glix"
 version = "0.1.0"
 edition = "2021"
 [workspace]
 members = ["examples/*"]
 
 [workspace.dependencies]
-glixel = { version = "0.1", path = "." }
+glix = { version = "0.1", path = "." }
 
 [dependencies]
 anyhow = "1.0.75"
