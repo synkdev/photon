@@ -79,7 +79,8 @@ async fn run() {
 
 	let mut photon = photon::Photon::new(device.clone(), queue.clone(), config.format);
 
-	let pixel_size = photon::Pixel::new(256.0, 256.0, (size.width as f32, size.height as f32));
+	let pixel_size =
+		photon::Pixel::new(256.0, 256.0).to_ndc((size.width as f32, size.height as f32));
 
 	println!("{:#?}", pixel_size);
 

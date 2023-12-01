@@ -12,23 +12,58 @@ pub struct Photon {
 	pub render_pipeline: wgpu::RenderPipeline,
 }
 
-/// Struct for pixel values
-/// Given X and Y coordinates in pixels, it converts them to NDC (**N**ormalized **D**evice
-/// **C**ordinates) when used with the `new` method.
+/// Struct for pixel values representing coordinates in pixels.
+///
+/// Used to represent x and y coordinates in pixels.
 #[derive(Debug)]
 pub struct Pixel {
-	/// X position as a 32 bit float
 	x: f32,
-	/// Y position as a 32 bit float
 	y: f32,
 }
 
 impl Pixel {
-	/// Method, which when passed with the X and Y coordinates, and the window size (as a tuple of
-	/// f32s), converts it to NDC coordinates, which can be consumed by the renderer or wgpu.
-	pub fn new(x: f32, y: f32, window_size: (f32, f32)) -> Self {
-		let ndc_x = (x * 2.0) / window_size.0 - 1.0;
-		let ndc_y = 1.0 - (y * 2.0) / window_size.1;
+	/// Constructor method to create a new Pixel instance.
+	///
+	/// # Arguments
+	///
+	/// * `x` - The x-coordinate value in pixels.
+	/// * `y` - The y-coordinate value in pixels.
+	///
+	/// # Example
+	///
+	/// ```
+	/// use photon::Pixel;
+	///
+	/// let pixel = Pixel::new(10.0, 20.0);
+	/// ```
+	pub fn new(x: f32, y: f32) -> Self {
+		Pixel { x, y }
+	}
+
+	/// Method to convert Pixel coordinates to Normalized Device Coordinates (NDC).
+	///
+	/// Converts the pixel coordinates to NDC using the provided window size.
+	///
+	/// # Arguments
+	///
+	/// * `window_size` - A tuple representing the window size (width, height) in pixels.
+	///
+	/// # Returns
+	///
+	/// A new Pixel instance with the coordinates converted to NDC.
+	///
+	/// # Example
+	///
+	/// ```
+	/// use photon::Pixel;
+	///
+	/// let pixel = Pixel::new(100.0, 200.0);
+	/// let window_size = (800.0, 600.0);
+	/// let ndc_pixel = pixel.to_ndc(window_size);
+	/// ```
+	pub fn to_ndc(&self, window_size: (f32, f32)) -> Self {
+		let ndc_x = (self.x * 2.0) / window_size.0 - 1.0;
+		let ndc_y = 1.0 - (self.y * 2.0) / window_size.1;
 		Pixel { x: ndc_x, y: ndc_y }
 	}
 }
