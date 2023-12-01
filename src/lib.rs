@@ -13,8 +13,12 @@ pub struct Photon {
 }
 
 /// Struct for pixel values
+/// Given X and Y coordinates in pixels, it converts them to NDC (**N**ormalized **D**evice
+/// **C**ordinates) when used with the `new` method.
 pub struct Pixel {
+	/// X position as a 32 bit float
 	x: f32,
+	/// Y position as a 32 bit float
 	y: f32,
 }
 
