@@ -15,6 +15,7 @@ pub struct Photon {
 /// Struct for pixel values
 /// Given X and Y coordinates in pixels, it converts them to NDC (**N**ormalized **D**evice
 /// **C**ordinates) when used with the `new` method.
+#[derive(Debug)]
 pub struct Pixel {
 	/// X position as a 32 bit float
 	x: f32,
@@ -23,6 +24,8 @@ pub struct Pixel {
 }
 
 impl Pixel {
+	/// Method, which when passed with the X and Y coordinates, and the window size (as a tuple of
+	/// f32s), converts it to NDC coordinates, which can be consumed by the renderer or wgpu.
 	pub fn new(x: f32, y: f32, window_size: (f32, f32)) -> Self {
 		let ndc_x = (x * 2.0) / window_size.0 - 1.0;
 		let ndc_y = 1.0 - (y * 2.0) / window_size.1;
