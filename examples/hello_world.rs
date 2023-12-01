@@ -1,4 +1,4 @@
-use glix::helpers::WgpuState;
+use photon::helpers::WgpuState;
 use winit::{
 	event::*,
 	event_loop::{
@@ -15,7 +15,7 @@ pub struct RenderInfo<'a> {
 	pub queue: &'a wgpu::Queue,
 }
 
-fn render(render_info: RenderInfo, glix: &mut glix::Glix) {
+fn render(render_info: RenderInfo, photon: &mut photon::Photon) {
 	let surface = render_info.surface;
 	let device = render_info.device;
 	let config = render_info.config;
@@ -43,7 +43,7 @@ fn render(render_info: RenderInfo, glix: &mut glix::Glix) {
 		..Default::default()
 	};
 
-	glix.render_encode(&desc);
+	photon.render_encode(&desc);
 
 	frame.present();
 }
@@ -77,7 +77,7 @@ async fn run() {
 	};
 	surface.configure(&device, &config);
 
-	let mut glix = glix::Glix::new(device.clone(), queue.clone(), config.format);
+	let mut photon = photon::Photon::new(device.clone(), queue.clone(), config.format);
 
 	event_loop.run(move |event, _, control_flow| {
 		match event {
@@ -116,7 +116,7 @@ async fn run() {
 						config: &config,
 						queue: &queue,
 					},
-					&mut glix,
+					&mut photon,
 				)
 			}
 			Event::MainEventsCleared => {

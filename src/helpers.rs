@@ -1,7 +1,7 @@
 use winit::window::Window;
 
 /// Simple state struct for WGPU. You can ship your own implementation and just use
-/// the Glixel struct for rendering, but this just gets rid of a lot of boilerplate
+/// the Photon struct for rendering, but this just gets rid of a lot of boilerplate
 /// code. All fields are public.
 pub struct WgpuState {
 	/// Adapter
