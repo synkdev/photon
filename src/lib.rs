@@ -21,6 +21,15 @@ pub struct Pixel {
 	pub y: f32,
 }
 
+#[derive(Debug)]
+#[repr(C)]
+pub struct Shape {
+	pub shape_type: u32,
+	pub position: [f32; 2],
+	pub size: [f32; 2],
+	pub radius: f32,
+}
+
 impl Pixel {
 	/// Constructor method to create a new Pixel instance.
 	///
