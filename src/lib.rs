@@ -17,8 +17,8 @@ pub struct Photon {
 /// Used to represent x and y coordinates in pixels.
 #[derive(Debug)]
 pub struct Pixel {
-	x: f32,
-	y: f32,
+	pub x: f32,
+	pub y: f32,
 }
 
 impl Pixel {
@@ -69,6 +69,17 @@ impl Pixel {
 }
 
 impl Photon {
+	/// Creates a new instance of `Photon`.
+	///
+	/// # Arguments
+	///
+	/// * `device` - Arc-wrapped wgpu::Device for rendering.
+	/// * `queue` - Arc-wrapped wgpu::Queue for rendering commands.
+	/// * `texture_format` - wgpu::TextureFormat used in rendering.
+	///
+	/// # Returns
+	///
+	/// A new `Photon` instance.
 	pub fn new(
 		device: Arc<wgpu::Device>,
 		queue: Arc<wgpu::Queue>,
@@ -119,6 +130,14 @@ impl Photon {
 		Self { device, queue, render_pipeline }
 	}
 
+	/// Encodes rendering commands based on the provided render pass descriptor.
+	///
+	/// # Arguments
+	///
+	/// * `render_pass_desc` - A reference to a wgpu::RenderPassDescriptor.
+	///
+	/// This method sets up rendering commands based on the provided descriptor
+	/// and submits them to the rendering queue.
 	pub fn render_encode(&mut self, render_pass_desc: &wgpu::RenderPassDescriptor) {
 		let device = &self.device;
 		let queue = &self.queue;

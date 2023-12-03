@@ -1,22 +1,29 @@
 use winit::window::Window;
 
-/// Simple state struct for WGPU. You can ship your own implementation and just use
-/// the Photon struct for rendering, but this just gets rid of a lot of boilerplate
-/// code. All fields are public.
+/// Simple state struct for WGPU. It encapsulates various WGPU components for rendering.
 pub struct WgpuState {
-	/// Adapter
+	/// Adapter used for the rendering device.
 	pub adapter: wgpu::Adapter,
-	/// Surface
+	/// Surface for rendering.
 	pub surface: wgpu::Surface,
-	/// Device
+	/// Device used for rendering.
 	pub device: wgpu::Device,
-	/// Queue
+	/// Queue for sending rendering commands.
 	pub queue: wgpu::Queue,
-	/// Window size
+	/// Size of the window.
 	pub size: winit::dpi::PhysicalSize<u32>,
 }
 
 impl WgpuState {
+	/// Creates a new `WgpuState` instance based on the provided `Window`.
+	///
+	/// # Arguments
+	///
+	/// * `window` - A reference to a `Window` instance from winit.
+	///
+	/// # Returns
+	///
+	/// A new `WgpuState` instance initialized with the necessary WGPU components.
 	pub async fn new(window: &Window) -> Self {
 		let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
 			backends: wgpu::Backends::VULKAN,
