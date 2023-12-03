@@ -78,6 +78,17 @@ impl Pixel {
 	}
 }
 
+impl Shape {
+	pub fn new(
+		size: Pixel,
+		position: Pixel,
+		color: Vec<f32>,
+		radius: f32,
+		shape_type: ShapeType,
+	) -> Self {
+	}
+}
+
 impl Photon {
 	/// Creates a new instance of `Photon`.
 	///
