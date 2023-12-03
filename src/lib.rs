@@ -28,6 +28,7 @@ pub struct Shape {
 	pub position: [f32; 2],
 	pub size: [f32; 2],
 	pub radius: f32,
+	pub color: [f32; 4],
 }
 
 impl Pixel {
