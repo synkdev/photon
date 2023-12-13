@@ -96,18 +96,24 @@ impl Pixel {
 
 impl Shape {
 	pub fn new(
-		size: Pixel,
-		position: Pixel,
-		color: Vec<f32>,
+		size: (f32, f32),
+		position: (f32, f32),
+		color: [f32; 4],
 		radius: f32,
 		shape_type: ShapeType,
 	) -> Self {
-		let mut shape_type_index: u32 = 0;
+		let mut shape_type_index;
 		match shape_type {
 			ShapeType::Rectangle => shape_type_index = 0,
 			ShapeType::Circle => shape_type_index = 1,
 		}
-		Self {}
+		Self {
+			size: [size.0, size.1],
+			position: [position.0, position.1],
+			shape_type: shape_type_index,
+			radius,
+			color
+		}
 	}
 }
 
