@@ -12,13 +12,24 @@ pub struct Photon {
 	pub render_pipeline: wgpu::RenderPipeline,
 }
 
+#[derive(Debug)]
+pub enum PixelOrient {
+	Vertical,
+	Horizontal
+}
+
 /// Struct for pixel values representing coordinates in pixels.
 ///
 /// Used to represent x and y coordinates in pixels.
 #[derive(Debug)]
 pub struct Pixel {
-	pub x: f32,
-	pub y: f32,
+	pub value: f32,
+	pub orient: PixelOrient
+}
+
+pub enum ShapeType {
+	Rectangle,
+	Circle,
 }
 
 #[derive(Debug)]
@@ -36,18 +47,18 @@ impl Pixel {
 	///
 	/// # Arguments
 	///
-	/// * `x` - The x-coordinate value in pixels.
-	/// * `y` - The y-coordinate value in pixels.
+	/// * `value` - The value in pixels.
+	/// * `orient` - The orientation (height or width).
 	///
 	/// # Example
 	///
 	/// ```
 	/// use photon::Pixel;
 	///
-	/// let pixel = Pixel::new(10.0, 20.0);
+	/// let pixel = Pixel::new(10.0, PixelOrient::Horizontal);
 	/// ```
-	pub fn new(x: f32, y: f32) -> Self {
-		Pixel { x, y }
+	pub fn new(value: f32, orient: PixelOrient) -> Self {
+		Pixel { value, orient }
 	}
 
 	/// Method to convert Pixel coordinates to Normalized Device Coordinates (NDC).
@@ -60,21 +71,26 @@ impl Pixel {
 	///
 	/// # Returns
 	///
-	/// A new Pixel instance with the coordinates converted to NDC.
+	/// An f32 value of the NDC coordinate.
 	///
 	/// # Example
 	///
 	/// ```
 	/// use photon::Pixel;
 	///
-	/// let pixel = Pixel::new(100.0, 200.0);
+	/// let pixel = Pixel::new(100.0, PixelOrient::Horizontal);
 	/// let window_size = (800.0, 600.0);
 	/// let ndc_pixel = pixel.to_ndc(window_size);
 	/// ```
-	pub fn to_ndc(&self, window_size: (f32, f32)) -> Self {
-		let ndc_x = (self.x * 2.0) / window_size.0 - 1.0;
-		let ndc_y = 1.0 - (self.y * 2.0) / window_size.1;
-		Pixel { x: ndc_x, y: ndc_y }
+	pub fn to_ndc(&self, window_size: (f32, f32)) -> f32 {
+		match self.orient {
+			PixelOrient::Horizontal => {
+				(self.value * 2.0) / window_size.0 - 1.0
+			}
+			PixelOrient::Vertical => {
+				(self.value * 2.0) / window_size.1
+			}
+		}
 	}
 }
 
@@ -86,6 +102,12 @@ impl Shape {
 		radius: f32,
 		shape_type: ShapeType,
 	) -> Self {
+		let mut shape_type_index: u32 = 0;
+		match shape_type {
+			ShapeType::Rectangle => shape_type_index = 0,
+			ShapeType::Circle => shape_type_index = 1,
+		}
+		Self {}
 	}
 }
 
