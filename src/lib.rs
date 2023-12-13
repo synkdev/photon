@@ -27,20 +27,30 @@ pub struct Pixel {
 	pub orient: PixelOrient
 }
 
+/// Enum representing different types of shapes.
 pub enum ShapeType {
-	Rectangle,
-	Circle,
+    /// Rectangle shape type.
+    Rectangle,
+    /// Circle shape type.
+    Circle,
 }
 
+/// Represents a shape with properties such as position, size, color, etc.
 #[derive(Debug)]
 #[repr(C)]
 pub struct Shape {
-	pub shape_type: u32,
-	pub position: [f32; 2],
-	pub size: [f32; 2],
-	pub radius: f32,
-	pub color: [f32; 4],
+    /// Type of the shape.
+    pub shape_type: u32,
+    /// Position of the shape (x, y coordinates).
+    pub position: [f32; 2],
+    /// Size of the shape (width, height).
+    pub size: [f32; 2],
+    /// Radius of the shape (for circles).
+    pub radius: f32,
+    /// Color of the shape (RGBA values).
+    pub color: [f32; 4],
 }
+
 
 impl Pixel {
 	/// Constructor method to create a new Pixel instance.
@@ -95,26 +105,53 @@ impl Pixel {
 }
 
 impl Shape {
-	pub fn new(
-		size: (f32, f32),
-		position: (f32, f32),
-		color: [f32; 4],
-		radius: f32,
-		shape_type: ShapeType,
-	) -> Self {
-		let shape_type_index;
-		match shape_type {
-			ShapeType::Rectangle => shape_type_index = 0,
-			ShapeType::Circle => shape_type_index = 1,
-		}
-		Self {
-			size: [size.0, size.1],
-			position: [position.0, position.1],
-			shape_type: shape_type_index,
-			radius,
-			color
-		}
-	}
+    /// Creates a new instance of `Shape`.
+    ///
+    /// # Arguments
+    ///
+    /// * `size` - A tuple representing the size of the shape (width, height).
+    /// * `position` - A tuple representing the position of the shape (x, y coordinates).
+    /// * `color` - An array representing the color of the shape in RGBA format.
+    /// * `radius` - The radius of the shape (applicable for circles).
+    /// * `shape_type` - The type of the shape (`ShapeType::Rectangle` or `ShapeType::Circle`).
+    ///
+    /// # Returns
+    ///
+    /// A new `Shape` instance based on the provided parameters.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use photon::{Shape, ShapeType};
+    ///
+    /// let size = (100.0, 50.0);
+    /// let position = (200.0, 150.0);
+    /// let color = [0.5, 0.2, 0.8, 1.0]; // RGBA values
+    /// let radius = 25.0;
+    /// let shape_type = ShapeType::Rectangle;
+    ///
+    /// let shape = Shape::new(size, position, color, radius, shape_type);
+    /// ```
+    pub fn new(
+        size: (f32, f32),
+        position: (f32, f32),
+        color: [f32; 4],
+        radius: f32,
+        shape_type: ShapeType,
+    ) -> Self {
+        let shape_type_index = match shape_type {
+            ShapeType::Rectangle => 0,
+            ShapeType::Circle => 1,
+        };
+
+        Self {
+            size: [size.0, size.1],
+            position: [position.0, position.1],
+            shape_type: shape_type_index,
+            radius,
+            color,
+        }
+    }
 }
 
 impl Photon {
