@@ -102,7 +102,7 @@ impl Shape {
 		radius: f32,
 		shape_type: ShapeType,
 	) -> Self {
-		let mut shape_type_index;
+		let shape_type_index;
 		match shape_type {
 			ShapeType::Rectangle => shape_type_index = 0,
 			ShapeType::Circle => shape_type_index = 1,
