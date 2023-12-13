@@ -79,6 +79,11 @@ async fn run() {
 
 	let mut photon = photon::Photon::new(device.clone(), queue.clone(), config.format);
 
+	let pixel_size =
+		photon::Pixel::new(256.0, photon::PixelOrient::Horizontal).to_ndc((size.width as f32, size.height as f32));
+
+	println!("{:#?}", pixel_size);
+
 	event_loop.run(move |event, _, control_flow| {
 		match event {
 			Event::WindowEvent { ref event, window_id } if window_id == window.id() => {
